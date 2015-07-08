@@ -1,0 +1,12 @@
+﻿@model SportSystem.Web.ViewModels.MatchViewModel
+
+<div>
+    <h2>@(Model.HomeTeamName + " VS " + Model.AwayTeamName)</h2>
+    <p>@Model.Date</p>
+    @if (this.User.Identity.IsAuthenticated)
+    {
+        <p>
+            @Html.ActionLink("Details", "Details", "Matches", new { id = Model.Id }, new { @class = "btn btn-default" })
+        </p>
+    }
+</div>

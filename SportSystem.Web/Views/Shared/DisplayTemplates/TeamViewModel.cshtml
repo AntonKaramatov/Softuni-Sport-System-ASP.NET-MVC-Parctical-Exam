@@ -1,0 +1,14 @@
+﻿@model SportSystem.Web.ViewModels.TeamViewModel
+
+<div>
+    <h2>@Model.Name</h2>
+    <p>@Model.Website</p>
+    <p>Votes: @Model.Votes</p>
+
+    @if (this.User.Identity.IsAuthenticated)
+    {
+        <p>
+            @Html.ActionLink("Details", "Details", "Teams", new { id = Model.Id }, new { @class = "btn btn-default" })
+        </p>
+    }
+</div>

@@ -1,0 +1,86 @@
+﻿@model SportSystem.Web.ViewModels.MatchDetailsViewModel
+
+@{
+    ViewBag.Title = "Match Details";
+}
+
+<div class="row">
+    <div class="col-md-7">
+        <h2>Match:</h2>
+        <h3>Home Team: @Model.HomeTeamName (Bets: $<span id="home-team-bets">@Model.HomeTeamBets</span>)</h3>
+        <h3>Away Team: @Model.AwayTeamName (Bets: $<span id="away-team-bets">@Model.AwayTeamBets</span>)</h3>
+        <p>Date and time: @Model.Date</p>
+    </div>
+
+    <div class="cow-md-2 col-md-offset-7">
+        <h2>Bets:</h2>
+        <div>
+            @using (Ajax.BeginForm("Bet", "Matches", new { matchId = Model.Id, teamId = Model.HomeTeamId }, new AjaxOptions
+            {
+                HttpMethod = "POST",
+                InsertionMode = InsertionMode.Replace,
+                UpdateTargetId = "home-team-bets",
+                OnSuccess = "onBetSuccess"
+            }))
+            {
+                @Html.AntiForgeryToken()
+                <span>Home bet:</span>
+                <input class="ammount" name="ammount"/>
+                <input class="btn btn-info btn-sm" type="submit" value="Bet" />
+            }
+        </div>
+        <br/>
+        <div>
+            @using (Ajax.BeginForm("Bet", "Matches", new { matchId = Model.Id, teamId = Model.AwayTeamId }, new AjaxOptions
+            {
+                HttpMethod = "POST",
+                InsertionMode = InsertionMode.Replace,
+                UpdateTargetId = "away-team-bets",
+                OnSuccess = "onBetSuccess"
+            }))
+            {
+                @Html.AntiForgeryToken()
+                <span>Away bet:</span>
+                <input class="ammount" name="ammount" />
+                <input class="btn btn-info btn-sm" type="submit" value="Bet" />
+            }
+        </div>
+    </div>
+</div>
+<div>
+    <hr />
+    <div id="comments">
+        <h2>Comments:</h2>
+        @Html.DisplayFor(x => x.Comments)
+    </div>
+    <hr />
+
+    <div>
+        <h2>Add Comment:</h2>
+        @using (Ajax.BeginForm("AddComment", "Matches", new { matchId = Model.Id }, new AjaxOptions
+        {
+            HttpMethod = "POST",
+            InsertionMode = InsertionMode.InsertAfter,
+            UpdateTargetId = "comments",
+            OnSuccess = "onAddCommentSuccess"
+        }))
+        {
+            @Html.AntiForgeryToken()
+
+            <textarea id="content" name="content"></textarea> <br />
+            <input class="btn btn-info" type="submit" value="Add Comment" />
+        }
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script>
+        function onAddCommentSuccess() {
+            $('#content').val('');
+        }
+        function onBetSuccess() {
+            $('.ammount').val('');
+        }
+    </script>
+}

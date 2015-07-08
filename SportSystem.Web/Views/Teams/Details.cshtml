@@ -1,0 +1,52 @@
+﻿@model SportSystem.Web.ViewModels.TeamDetailsViewModel
+
+<div>
+    <h1>@Model.Name</h1>
+    <p>
+        @Html.LabelFor(x => x.NickName)
+        @Html.DisplayFor(x => x.NickName)
+    </p>
+    <p>
+        @Html.LabelFor(x => x.DateFounded)
+        @Html.DisplayFor(x => x.DateFounded)
+    </p>
+    <p>
+        @Html.LabelFor(x => x.Votes)
+        <span id="votes-count">@Model.Votes</span>
+
+        <div>
+            @if (!Model.HasVoted)
+            {
+                <div id="vote-button">
+                    @using (Ajax.BeginForm("Vote", "Teams", new { id = Model.Id }, new AjaxOptions
+                    {
+                        HttpMethod = "POST",
+                        UpdateTargetId = "votes-count",
+                        InsertionMode = InsertionMode.Replace,
+                        OnSuccess = "onVoteSuccess"
+                    }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="submit" value="+" class="btn btn-xs btn-success" />
+                    }
+                </div>
+            }
+            else
+            {
+                <i>You already voted.</i>
+            }
+        </div>
+    </p>
+    <hr />
+    <h2>Players:</h2>
+    @Html.DisplayFor(x => x.Players)
+</div>
+
+@section scripts {
+    <script src="~/Scripts/jquery.unobtrusive-ajax.js"></script>
+    <script>
+        function onVoteSuccess() {
+            $('#vote-button').replaceWith('<i>You already voted.</i>');
+        }
+    </script>
+}
